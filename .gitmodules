@@ -1,0 +1,6 @@
+[submodule "link"]
+	path = link
+	url = ./link
+[submodule "rmlink"]
+	path = rmlink
+	url = ./rmlink

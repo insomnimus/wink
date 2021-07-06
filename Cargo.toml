@@ -1,0 +1,31 @@
+[package]
+name = "wink"
+version = "0.1.0"
+edition = "2018"
+license = "MIT"
+authors = [ "Taylan Gökkaya <insomnimus.dev@gmail.com>" ]
+description = "Windows link tools with NTFS junctions support."
+readme = "readme.md"
+repository = "https://github.com/insomnimus/wink"
+keywords = [
+	"cli", "windows", "file", "utility",
+]
+categories = [
+	"command-line-utilities", "filesystem"
+]
+
+[[bin]]
+name = "link"
+path = "src/link.rs"
+
+[[bin]]
+name = "rmlink"
+path = "src/rmlink.rs"
+
+[[bin]]
+name = "linfo"
+path = "src/linfo.rs"
+
+[dependencies]
+clap = "3.0.0-beta.2"
+junction = "0.2.0"
