@@ -1,6 +1,21 @@
 use clap::{crate_version, App, AppSettings, Arg};
 
-pub fn new() -> App<'static> {
+pub fn app_linfo() -> App<'static> {
+    let app = App::new("linfo")
+        .about("Check if files are symbolic links or junctions.")
+        .version(crate_version!())
+        .setting(AppSettings::UnifiedHelpMessage)
+        .setting(AppSettings::ArgRequiredElseHelp);
+
+    let files = Arg::new("files")
+        .about("File(s) to check.")
+        .required(true)
+        .multiple(true);
+
+    app.arg(files)
+}
+
+pub fn app_link() -> App<'static> {
     let app = App::new("link")
 	.about("Create links.")
 	.version(crate_version!())
@@ -40,4 +55,15 @@ pub fn new() -> App<'static> {
         .arg(symbolic)
         .arg(hard)
         .arg(junction)
+}
+
+pub fn app_rmlink() -> App<'static> {
+    let app = App::new("rmlink")
+        .about("Removes links.")
+        .version(crate_version!())
+        .setting(AppSettings::ArgRequiredElseHelp);
+
+    let files = Arg::new("files").about("File(s) to unlink.").multiple(true);
+
+    app.arg(files)
 }

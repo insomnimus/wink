@@ -1,10 +1,9 @@
 #![feature(windows_file_type_ext)]
 #![cfg(windows)]
 
-mod app_linfo;
+use std::{fs, os::windows::fs::FileTypeExt, process};
 
-use std::os::windows::fs::FileTypeExt;
-use std::{fs, process};
+use wink::app_linfo;
 
 struct Cmd {
     files: Vec<String>,
@@ -12,7 +11,7 @@ struct Cmd {
 
 impl Cmd {
     fn from_args() -> Self {
-        let m = app_linfo::new().get_matches();
+        let m = app_linfo().get_matches();
         let files: Vec<_> = m.values_of("files").unwrap().map(String::from).collect();
         Self { files }
     }

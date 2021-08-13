@@ -1,10 +1,9 @@
 #![feature(windows_file_type_ext)]
 #![cfg(windows)]
 
-mod app_rmlink;
+use std::{fmt, fs, io, os::windows::fs::FileTypeExt, process};
 
-use std::os::windows::fs::FileTypeExt;
-use std::{fmt, fs, io, process};
+use wink::app_rmlink;
 
 enum Error {
     Io(io::Error),
@@ -32,7 +31,7 @@ struct Cmd {
 
 impl Cmd {
     fn from_args() -> Self {
-        let m = app_rmlink::new().get_matches();
+        let m = app_rmlink().get_matches();
 
         let files: Vec<_> = m.values_of("files").unwrap().map(String::from).collect();
 
