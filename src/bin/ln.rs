@@ -2,7 +2,7 @@
 
 use std::{fs, io, os::windows::fs as winfs, process};
 
-use wink::app_link;
+use wink::app_ln;
 
 enum LinkType {
     Symbolic,
@@ -20,7 +20,7 @@ struct Cmd {
 impl Cmd {
     fn from_args() -> Self {
         use LinkType::*;
-        let m = app_link().get_matches();
+        let m = app_ln().get_matches();
         let original = m.value_of("original").map(String::from).unwrap();
         let target = m.value_of("target").map(String::from).unwrap();
 

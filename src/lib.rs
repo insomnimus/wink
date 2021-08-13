@@ -15,8 +15,8 @@ pub fn app_linfo() -> App<'static> {
     app.arg(files)
 }
 
-pub fn app_link() -> App<'static> {
-    let app = App::new("link")
+pub fn app_ln() -> App<'static> {
+    let app = App::new("ln")
 	.about("Create links.")
 	.version(crate_version!())
 	.setting(AppSettings::ArgRequiredElseHelp)

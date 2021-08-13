@@ -18,7 +18,7 @@ fn generate_completions(mut app: App<'static>, bin_name: &str) {
 
 fn main() {
     for (app, name) in [
-        (app_link(), "link"),
+        (app_ln(), "ln"),
         (app_rmlink(), "rmlink"),
         (app_linfo(), "linfo"),
     ] {
