@@ -1,4 +1,4 @@
-use clap::{crate_version, App, AppSettings, Arg};
+use clap::{crate_version, App, AppSettings, Arg, ArgSettings};
 
 pub fn app_linfo() -> App<'static> {
     let app = App::new("linfo")
@@ -10,7 +10,7 @@ pub fn app_linfo() -> App<'static> {
     let files = Arg::new("files")
         .about("File(s) to check.")
         .required(true)
-        .multiple(true);
+        .setting(ArgSettings::MultipleValues);
 
     app.arg(files)
 }
@@ -63,7 +63,9 @@ pub fn app_rmlink() -> App<'static> {
         .version(crate_version!())
         .setting(AppSettings::ArgRequiredElseHelp);
 
-    let files = Arg::new("files").about("File(s) to unlink.").multiple(true);
+    let files = Arg::new("files")
+        .about("File(s) to unlink.")
+        .setting(ArgSettings::MultipleValues);
 
     app.arg(files)
 }
