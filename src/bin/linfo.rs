@@ -16,12 +16,18 @@ impl Cmd {
         Self { files }
     }
 
-    fn run(&self) {
+    fn run(&self) -> Result<(), std::io::Error> {
         for f in &self.files {
-            let md = fs::symlink_metadata(f).unwrap_or_else(|e| {
-                eprintln!("error accessing {}: {}", f, &e);
-                process::exit(2);
-            });
+            if let Ok(true) = junction::exists(f) {
+                if let Ok(original) = junction::get_target(f) {
+                    println!("{}: directory junction to {}", f, original.display());
+                } else {
+                    println!("{}: directory junction", f);
+                }
+                continue;
+            }
+
+            let md = fs::symlink_metadata(f)?;
 
             let ftype = md.file_type();
             if ftype.is_symlink_dir() {
@@ -40,19 +46,17 @@ impl Cmd {
                 } else {
                     println!("{}: symbolic link to a file", f);
                 }
-            } else if let Ok(true) = junction::exists(f) {
-                if let Ok(original) = junction::get_target(f) {
-                    println!("{}: directory junction to {}", f, original.display());
-                } else {
-                    println!("{}: directory junction", f);
-                }
             } else {
                 println!("{}: not a junction or a symbolic link", f);
             }
         }
+        Ok(())
     }
 }
 
 fn main() {
-    Cmd::from_args().run();
+    if let Err(e) = Cmd::from_args().run() {
+        eprintln!("error: {}", e);
+        process::exit(2);
+    }
 }
