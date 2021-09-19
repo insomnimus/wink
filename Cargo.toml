@@ -1,6 +1,6 @@
 [package]
 name = "wink"
-version = "0.2.3"
+version = "0.2.4"
 edition = "2018"
 license = "MIT"
 authors = [ "Taylan Gökkaya <insomnimus.dev@gmail.com>" ]
@@ -17,6 +17,7 @@ categories = [
 [dependencies]
 clap = "3.0.0-beta.2"
 junction = "0.2.0"
+normpath = "0.3.0"
 
 [build-dependencies]
 clap = "3.0.0-beta.2"

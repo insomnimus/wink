@@ -1,8 +1,9 @@
 #![feature(windows_file_type_ext)]
 #![cfg(windows)]
 
-use std::{fs, os::windows::fs::FileTypeExt, process};
+use std::{fs, os::windows::fs::FileTypeExt, path::PathBuf, process};
 
+use normpath::PathExt;
 use wink::app_linfo;
 
 struct Cmd {
@@ -27,22 +28,27 @@ impl Cmd {
                 continue;
             }
 
-            let md = fs::symlink_metadata(f)?;
+            let p = PathBuf::from(f);
+            let md = fs::symlink_metadata(&p)?;
 
             let ftype = md.file_type();
             if ftype.is_symlink_dir() {
-                if let Ok(original) = fs::canonicalize(f) {
+                if let Ok(original) = p.normalize() {
                     println!(
                         "{}: symbolic link to the directory {}",
                         f,
-                        original.display()
+                        original.as_path().display()
                     );
                 } else {
                     println!("{}: symbolic link to a directory", f);
                 }
             } else if ftype.is_symlink_file() {
-                if let Ok(original) = fs::canonicalize(f) {
-                    println!("{}: symbolic link to the file {}", f, original.display());
+                if let Ok(original) = p.normalize() {
+                    println!(
+                        "{}: symbolic link to the file {}",
+                        f,
+                        original.as_path().display()
+                    );
                 } else {
                     println!("{}: symbolic link to a file", f);
                 }
