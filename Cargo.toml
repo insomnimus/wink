@@ -1,7 +1,7 @@
 [package]
 name = "wink"
-version = "0.2.4"
-edition = "2018"
+version = "0.3.0"
+edition = "2021"
 license = "MIT"
 authors = [ "Taylan Gökkaya <insomnimus.dev@gmail.com>" ]
 description = "Windows link tools with NTFS junctions support."
@@ -15,10 +15,11 @@ categories = [
 ]
 
 [dependencies]
-clap = "3.0.0-beta.2"
+clap = { version = "3.0.0", features = ["cargo", "wrap_help", "unicode"] }
 junction = "0.2.0"
 normpath = "0.3.0"
+wild = "2.0.4"
 
 [build-dependencies]
-clap = "3.0.0-beta.2"
-clap_generate = "3.0.0-beta.2"
+clap = { version = "3.0.0", features = ["cargo"] }
+clap_complete = "3.0.0"
