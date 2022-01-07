@@ -97,7 +97,7 @@
         },
         {
           "name": "Setup | Release notes",
-          "run": "GO111MODULE=on go install github.com/git-chglog/git-chglog/cmd/git-chglog@0.9.1\ngit-chglog -c .github/chglog/release.yml $(git describe --tags) > RELEASE.md\n"
+          "run": "go install github.com/git-chglog/git-chglog/cmd/git-chglog@0.9.1\ngit-chglog -c .github/chglog/release.yml $(git describe --tags) > RELEASE.md"
         },
         {
           "name": "Deploy | Publish",
