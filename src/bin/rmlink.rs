@@ -39,7 +39,7 @@ impl Cmd {
 	fn from_args() -> Self {
 		let m = app_rmlink().get_matches_from(wild::args());
 
-		let files: Vec<_> = m.values_of("files").unwrap().map(String::from).collect();
+		let files: Vec<_> = m.values_of("file").unwrap().map(String::from).collect();
 
 		Self { files }
 	}
