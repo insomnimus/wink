@@ -38,7 +38,7 @@
             "toolchain": "stable",
             "override": true,
             "profile": "minimal",
-            "target": "${{ matrix.arc }}-pc-windows-msvc"
+            "target": "${{ matrix.arch }}-pc-windows-msvc"
           }
         },
         {
