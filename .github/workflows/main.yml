@@ -43,6 +43,7 @@
         },
         {
           "name": "Test | ${{ matrix.ident }}",
+          "if": "matrix.arch != 'aarch64'",
           "uses": "actions-rs/cargo@v1.0.3",
           "with": {
             "command": "test",
