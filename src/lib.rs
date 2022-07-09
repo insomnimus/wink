@@ -1,52 +1,36 @@
 use clap::{
 	arg,
 	crate_version,
-	App,
-	AppSettings,
-	Arg,
+	Command,
 };
 
-pub fn app_linfo() -> App<'static> {
-	App::new("linfo")
+pub fn app_linfo() -> Command<'static> {
+	Command::new("linfo")
 		.about("Check if files are symbolic links or junctions.")
 		.version(crate_version!())
-		.setting(AppSettings::ArgRequiredElseHelp)
-		.arg(
-			Arg::new("file")
-				.help("File to check.")
-				.multiple_values(true)
-				.required(true),
-		)
+		.arg_required_else_help(true)
+		.arg(arg!(<file> ... "The file to check"))
 }
 
-pub fn app_ln() -> App<'static> {
-	App::new("ln")
+pub fn app_ln() -> Command<'static> {
+	Command::new("ln")
 	.about("Create links.")
 	.version(crate_version!())
-	.setting(AppSettings::ArgRequiredElseHelp)
+	.arg_required_else_help(true)
 	.after_long_help("If the type of the link is not specified, the default behaviour is to create hard links for files and soft links for directories.")
 	.args(&[
 	arg!(-s --symbolic "Create a symbolic link.").visible_alias("soft").group("kind"),
 	arg!(-h --hard "Create a hard link.").group("kind"),
 	arg!(-j --junction "Create an NTFS directory junction.").group("kind"),
-	Arg::new("target")
-	.help("The original file the link will target.")
-	.required(true),
-	Arg::new("path")
-	.help("The path of the newly created link.")
-	.required(true),
+	arg!(<target> "The original file the link will target."),
+	arg!(<path> "The Path of the link to be created"),
 	])
 }
 
-pub fn app_rmlink() -> App<'static> {
-	App::new("rmlink")
+pub fn app_rmlink() -> Command<'static> {
+	Command::new("rmlink")
 		.about("Removes links.")
 		.version(crate_version!())
-		.setting(AppSettings::ArgRequiredElseHelp)
-		.arg(
-			Arg::new("file")
-				.help("Any number of files to unlink.")
-				.required(true)
-				.multiple_values(true),
-		)
+		.arg_required_else_help(true)
+		.arg(arg!(<file> ... "Files to unlink."))
 }

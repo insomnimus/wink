@@ -4,10 +4,14 @@ use std::{
 	fs,
 	io,
 	os::windows::fs as winfs,
-	path::PathBuf,
+	path::{
+		Path,
+		PathBuf,
+	},
 	process,
 };
 
+use normpath::PathExt;
 use wink::app_ln;
 
 enum LinkType {
@@ -24,11 +28,21 @@ struct Cmd {
 }
 
 impl Cmd {
-	fn from_args() -> Self {
+	fn from_args() -> io::Result<Self> {
 		use LinkType::*;
 		let m = app_ln().get_matches_from(wild::args());
-		let path = m.value_of("path").map(PathBuf::from).unwrap();
-		let target = m.value_of("target").map(PathBuf::from).unwrap();
+		let path = m
+			.value_of("path")
+			.map(Path::new)
+			.unwrap()
+			.normalize_virtually()?
+			.into_path_buf();
+		let target = m
+			.value_of("target")
+			.map(Path::new)
+			.unwrap()
+			.normalize()?
+			.into_path_buf();
 
 		let link_type = if m.is_present("symbolic") {
 			Symbolic
@@ -40,11 +54,11 @@ impl Cmd {
 			Infer
 		};
 
-		Self {
+		Ok(Self {
 			path,
 			target,
 			link_type,
-		}
+		})
 	}
 
 	fn run(mut self) -> io::Result<()> {
@@ -77,7 +91,7 @@ impl Cmd {
 }
 
 fn main() {
-	if let Err(e) = Cmd::from_args().run() {
+	if let Err(e) = Cmd::from_args().and_then(|x| x.run()) {
 		eprintln!("error: {}", &e);
 		process::exit(2);
 	}
