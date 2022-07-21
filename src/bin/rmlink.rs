@@ -31,49 +31,44 @@ impl fmt::Display for Error {
 	}
 }
 
-struct Cmd {
-	files: Vec<String>,
-}
-
-impl Cmd {
-	fn from_args() -> Self {
-		let m = app_rmlink().get_matches_from(wild::args());
-
-		let files: Vec<_> = m.values_of("file").unwrap().map(String::from).collect();
-
-		Self { files }
-	}
-
-	fn run(&self) -> i32 {
-		let mut exit_code = 0;
-		for p in &self.files {
-			if let Err(e) = unlink(p) {
-				exit_code = 2;
-				eprintln!("error unlinking {}: {}", p, &e);
-			}
+fn run() -> i32 {
+	let m = app_rmlink().get_matches_from(wild::args());
+	let mut exit_code = 0;
+	for p in m.values_of("file").unwrap() {
+		if let Err(e) = unlink(p) {
+			exit_code += 1;
+			eprintln!("error unlinking {p}: {e}");
 		}
-		exit_code
 	}
+	exit_code
 }
 
 fn unlink(p: &str) -> Result<(), Error> {
 	// first check if it's a junction
 	if let Ok(true) = junction::exists(p) {
-		return junction::delete(p).map_err(Error::from);
+		junction::delete(p)?;
+		// We also need to delete the empty directory
+		fs::remove_dir(p)?;
+		return Ok(());
 	}
 
 	let md = fs::symlink_metadata(p)?;
-	// the readonly attribute has to be removed before deletion
-	let mut perms = md.permissions();
-	if perms.readonly() {
-		perms.set_readonly(false);
-		fs::set_permissions(p, perms)?;
-	}
+	let remove_readonly = || {
+		// the readonly attribute has to be removed before deletion
+		let mut perms = md.permissions();
+		if perms.readonly() {
+			perms.set_readonly(false);
+			fs::set_permissions(p, perms)?;
+		}
+		Ok::<(), io::Error>(())
+	};
 	let ftype = md.file_type();
 	if ftype.is_symlink_dir() {
 		// dir symlinks need to be removed by remove_dir
+		remove_readonly()?;
 		fs::remove_dir(p).map_err(Error::from)
 	} else if ftype.is_symlink_file() {
+		remove_readonly()?;
 		fs::remove_file(p).map_err(Error::from)
 	} else {
 		Err(Error::NotALink)
@@ -81,5 +76,5 @@ fn unlink(p: &str) -> Result<(), Error> {
 }
 
 fn main() {
-	process::exit(Cmd::from_args().run())
+	process::exit(run());
 }
